@@ -8,8 +8,8 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/chat_assistant_backend.git
-cd chat_assistant_backend
+git clone https://github.com/ac8628026/chat_assistant.git
+cd chat_assistant
 
 ##create an venv 
 python3 -m venv venv
