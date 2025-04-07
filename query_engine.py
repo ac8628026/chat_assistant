@@ -7,7 +7,12 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
+from dotenv import load_dotenv
+import os
 
+
+load_dotenv()
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 # path for insurance sources 
 
@@ -22,7 +27,22 @@ doc_file_paths = [
     "./sources/insurance/America's_Choice_Medical_Questions_-_Modified_(3) (1).docx",
 ]
 
-
+angelone_file_paths = [
+    "./sources/angelone/angelone_faqs/Add_and_Withdraw_Funds.csv",
+    "./sources/angelone/angelone_faqs/Angel_One_Recommendations.csv",
+    "./sources/angelone/angelone_faqs/Charges_and_Cashbacks.csv",
+    "./sources/angelone/angelone_faqs/Charts.csv",
+    "./sources/angelone/angelone_faqs/Compliance.csv",
+    "./sources/angelone/angelone_faqs/Fixed_Deposits.csv",
+    "./sources/angelone/angelone_faqs/IPO_&_OFS.csv",
+    "./sources/angelone/angelone_faqs/Loans.csv",
+    "./sources/angelone/angelone_faqs/Margin_Pledging_and_Margin_Trading.csv",
+    "./sources/angelone/angelone_faqs/Mutual_Funds.csv",
+    "./sources/angelone/angelone_faqs/Portfolio_and_Corporate_Actions.csv",
+    "./sources/angelone/angelone_faqs/Reports_and_Statements.csv",
+    "./sources/angelone/angelone_faqs/Your_Account.csv",
+    "./sources/angelone/angelone_faqs/Your_Orders.csv",
+]
 
 all_contents = []   # to store all documents contents in a list ( unique format)
 
@@ -36,6 +56,13 @@ for file in file_paths:
 
 for file in doc_file_paths:
     loader = UnstructuredWordDocumentLoader(file)
+    # print(f"Loading file: {file} loader: {loader}")
+    doc = loader.load()
+    # print(f"doc: {doc}")
+    all_contents.extend(doc)
+
+for file in angelone_file_paths:
+    loader = CSVLoader(file, encoding="utf-8")
     # print(f"Loading file: {file} loader: {loader}")
     doc = loader.load()
     # print(f"doc: {doc}")
@@ -54,7 +81,6 @@ chunk_docs = text_splitter.split_documents(all_contents)
 # print(f"total original docs: {len(all_contents)}")
 # print(f"total chunked docs: {len(chunk_docs)}")
 
-GOOGLE_API_KEY = "AIzaSyC6u_6OE7cWyOYhXRmhIw8zOe8Me8SVdHc"
 # embedding model 
 embedding_model = GoogleGenerativeAIEmbeddings(model ="models/embedding-001",google_api_key=GOOGLE_API_KEY)
 # embedding the chunks
@@ -99,9 +125,8 @@ print(f"Response: {response.content}")
 
 
 
-    
 
 
 
 
-    
+
