@@ -15,14 +15,7 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 def query_engine(query):
-    try:
-        loader = CSVLoader(file_path="./sources/angelone/angelone_faqs/Charts.csv", encoding="utf-8")
-        docs = loader.load()
-    except Exception as e:
-        print("🚨 CSV Load Error:", e)
-        raise e  # Let it bubble up
-
-
+ 
     # path for insurance sources 
     file_paths = [
         "./sources/insurance/America's_Choice_2500_Gold_SOB (1) (1).pdf",
@@ -91,10 +84,16 @@ def query_engine(query):
     
     # embedding model 
     embedding_model = GoogleGenerativeAIEmbeddings(model ="models/embedding-001",google_api_key=GOOGLE_API_KEY)
+
     # embedding the chunks
-    embedded_chunks = FAISS.from_documents(chunk_docs, embedding_model)
-    # save the vector store to disk
-    embedded_chunks.save_local("embedded_chunks")
+    if os.path.exists("embedded_chunks/index.faiss"):
+        embedded_chunks = FAISS.load_local("embedded_chunks", embedding_model, allow_dangerous_deserialization=True)
+        
+    else:
+        # embedding the chunks
+        embedded_chunks = FAISS.from_documents(chunk_docs, embedding_model)
+        embedded_chunks.save_local("embedded_chunks")
+        print(f"chunk load from api")
     
     # load the vector store from disk
     embedded_chunks = FAISS.load_local("embedded_chunks", embedding_model, allow_dangerous_deserialization=True)
