@@ -17,4 +17,11 @@ source venv/bin/activate
 
 ## install dep
 pip install -r requirements.txt
+
+##create .env 
+touch .env
+GOOGLE_API_KEY = google_api_key
+
+
+##run server
 uvicorn main:app --reload
